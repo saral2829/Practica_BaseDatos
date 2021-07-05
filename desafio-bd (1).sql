@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 22-06-2021 a las 09:34:51
+-- Tiempo de generación: 04-07-2021 a las 08:40:39
 -- Versión del servidor: 10.1.33-MariaDB
 -- Versión de PHP: 7.2.6
 
@@ -29,16 +29,16 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `departamentos` (
-  `num_dep` tinyint(4) NOT NULL,
+  `codigo_dep` int(11) NOT NULL,
   `nom_departamento` varchar(30) COLLATE utf8_spanish_ci NOT NULL,
-  `presupuesto` double NOT NULL
+  `presupuesto` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
 -- Volcado de datos para la tabla `departamentos`
 --
 
-INSERT INTO `departamentos` (`num_dep`, `nom_departamento`, `presupuesto`) VALUES
+INSERT INTO `departamentos` (`codigo_dep`, `nom_departamento`, `presupuesto`) VALUES
 (11, 'Calidad', 40000),
 (14, 'Informática', 80000),
 (15, 'Gestión', 95000),
@@ -49,21 +49,21 @@ INSERT INTO `departamentos` (`num_dep`, `nom_departamento`, `presupuesto`) VALUE
 -- --------------------------------------------------------
 
 --
--- Estructura de tabla para la tabla `empleado`
+-- Estructura de tabla para la tabla `empleados`
 --
 
-CREATE TABLE `empleado` (
+CREATE TABLE `empleados` (
   `dni` varchar(8) COLLATE utf8_spanish_ci NOT NULL,
   `nombre` varchar(30) COLLATE utf8_spanish_ci NOT NULL,
   `apellido` varchar(30) COLLATE utf8_spanish_ci NOT NULL,
-  `departamento` tinyint(4) NOT NULL
+  `departamento` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_spanish_ci;
 
 --
--- Volcado de datos para la tabla `empleado`
+-- Volcado de datos para la tabla `empleados`
 --
 
-INSERT INTO `empleado` (`dni`, `nombre`, `apellido`, `departamento`) VALUES
+INSERT INTO `empleados` (`dni`, `nombre`, `apellido`, `departamento`) VALUES
 ('31096675', 'Martin', 'Zarabia', 77),
 ('31096678', 'Juan', 'Lopez', 14),
 ('31236985', 'Maria', 'diamante', 14),
@@ -88,86 +88,25 @@ INSERT INTO `empleado` (`dni`, `nombre`, `apellido`, `departamento`) VALUES
 -- Indices de la tabla `departamentos`
 --
 ALTER TABLE `departamentos`
-  ADD PRIMARY KEY (`num_dep`);
+  ADD PRIMARY KEY (`codigo_dep`);
 
 --
--- Indices de la tabla `empleado`
+-- Indices de la tabla `empleados`
 --
-ALTER TABLE `empleado`
-  ADD PRIMARY KEY (`dni`);
+ALTER TABLE `empleados`
+  ADD PRIMARY KEY (`dni`),
+  ADD KEY `departamento` (`departamento`);
+
+--
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `empleados`
+--
+ALTER TABLE `empleados`
+  ADD CONSTRAINT `empleados_ibfk_1` FOREIGN KEY (`departamento`) REFERENCES `departamentos` (`codigo_dep`);
 COMMIT;
-
---
--- Consultas 
---
-
-2.1 obtener los apellidos de los empleados
-
-	SELECT apellido FROM `empleado`
-
-2.2 obtener los apellidos de los empleados sin repeticiones
-
-	SELECT DISTINCT apellido FROM `empleado`
-
-2.3 obtener los datos de los empleados que tengan el apellido Lopez
-
-	SELECT * FROM `empleado` WHERE apellido = 'Lopez'
-
-2.4 obtener los datos de los empleados que tengan el apellido Lopez y los que tengan apellido Perez
-
-
-	SELECT * FROM `empleado` WHERE apellido = 'Lopez' OR apellido = 'Perez'
-
-2.5 Obtener todos los datos de los empleados que trabajen en el departamento 14
-
-	SELECT * FROM `empleado` WHERE departamento = '14'
-
-2.6 Obtener todos los datos de los empleados que trabajen en el departamento 37 y 77
-
-	SELECT * FROM `empleado` WHERE departamento = '77' OR departamento = '37'
-
-2.7 Obtener los datos de los empleados cuyo apellido comience con P
-
-	SELECT * FROM `empleado` WHERE apellido LIKE 'P%'
-
-
-2.8 Obtener el presupuesto total de todos los departamentos
-
-	SELECT SUM(presupuesto) AS PresupuestoTotal FROM `departamentos`
-
-2.9 Obtener un listado completo de empleados, incluyendo por cada empleado los datos del empleado
-y de su departamento
-
-SELECT *FROM `empleado` INNER JOIN `departamentos` on empleado.departamento= departamentos.num_dep
-
-2.10 Obtener un listado completo de empleados, incluyendo el nombre y apellido del empleado junto
-al nombre y presupuesto de su departamento
-
-	SELECT empleado.nombre,apellido, departamentos.nom_departamento,presupuesto FROM `empleado` INNER JOIN `departamentos` on empleado.departamento= departamentos.num_dep
-
-2.11 Obtener los nombres y apellidos de los empleados que trabajen en departamentos cuyo
-presupuesto sea mayor de 60000
-
-
-	SELECT empleado.nombre,apellido FROM `empleado` INNER JOIN `departamentos` ON empleado.departamento= departamentos.num_dep AND departamentos.presupuesto>60000
-
-2.12 Añadir un nuevo departamento: Calidad con un presupuesto de 40000 y código 11, añadir un
-empleado vinculado al departamento recién creado: Esther Vazquez, DNI 89267109
-
-	INSERT INTO `departamentos` VALUES('11', 'Calidad', '40000')
-
-	INSERT INTO `empleado` VALUES('89267109', 'Esther', 'Vazquez', 11)
-
-
-
-
-
-
-
-
-
-
-
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
